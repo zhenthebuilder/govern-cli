@@ -17,15 +17,18 @@ It is meant to be dropped into:
 ## Install (under 5 minutes, one command)
 
 ```bash
-pip install "git+https://github.com/govern-cli/govern-cli.git#subdirectory=govern"
+pip install "git+https://github.com/zhenthebuilder/govern-cli.git"
 ```
 
-No network/PyPI access? Use the single-file fallback (zero dependencies
-beyond a stdlib-only YAML-lite reader for simple specs, or pass `--json`
-specs which need no YAML at all):
+This is a real, public, installable repo (not a placeholder) -- verified
+with a fresh virtualenv end-to-end as part of this project's own build
+process; see `DECISIONS.md` in the parent research workspace.
+
+No network/PyPI access? Use the single-file fallback (zero dependencies;
+pass `--json`/`.json`-named specs to avoid needing PyYAML at all):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/govern-cli/govern-cli/main/govern/govern_single_file.py -o govern.py
+curl -fsSL https://raw.githubusercontent.com/zhenthebuilder/govern-cli/main/govern_single_file.py -o govern.py
 python3 govern.py check spec.json /path/to/workspace
 ```
 
