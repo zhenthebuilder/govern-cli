@@ -57,10 +57,12 @@ class GovernanceReport:
 
 
 def load_spec(spec_path: Path) -> dict:
+    # YAML is a syntactic superset of JSON, so parsing with yaml.safe_load
+    # handles both .yaml/.yml and .json spec files correctly regardless of
+    # the file extension (avoids extension/content mismatches, e.g. a
+    # YAML-formatted spec saved with a .json name or vice versa).
     text = spec_path.read_text()
-    if spec_path.suffix in (".yaml", ".yml"):
-        return yaml.safe_load(text)
-    return json.loads(text)
+    return yaml.safe_load(text)
 
 
 def _combine_status(statuses: list[str]) -> str:

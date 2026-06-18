@@ -57,10 +57,24 @@ def cmd_diff(args: argparse.Namespace) -> int:
     return 1 if d["regressions"] else 0
 
 
-def cmd_init(args: argparse.Namespace) -> int:
-    template = """\
+TEMPLATE_SPEC = {
+    "deliverables": [
+        {
+            "id": "example-doc",
+            "description": "Example: a README must exist and be non-trivial",
+            "required": True,
+            "checks": [
+                {"type": "exists", "path": "README.md"},
+                {"type": "min_size", "path": "README.md", "min_bytes": 200},
+                {"type": "no_placeholder", "path": "README.md"},
+            ],
+        }
+    ]
+}
+
+YAML_TEMPLATE = """\
 # govern spec -- describe the deliverables an agent must produce.
-# Run: govern check spec.yaml /path/to/workspace
+# Run: govern check {out} /path/to/workspace
 deliverables:
   - id: example-doc
     description: "Example: a README must exist and be non-trivial"
@@ -74,8 +88,17 @@ deliverables:
       - type: no_placeholder
         path: "README.md"
 """
+
+
+def cmd_init(args: argparse.Namespace) -> int:
     out = Path(args.out)
-    out.write_text(template)
+    # Write content matching the file's own extension, so a spec produced
+    # by `govern init --out spec.json` is valid JSON (not YAML mislabeled
+    # as .json), and vice versa for .yaml/.yml.
+    if out.suffix in (".yaml", ".yml"):
+        out.write_text(YAML_TEMPLATE.format(out=out.name))
+    else:
+        out.write_text(json.dumps(TEMPLATE_SPEC, indent=2))
     print(f"wrote template spec to {out}")
     return 0
 
